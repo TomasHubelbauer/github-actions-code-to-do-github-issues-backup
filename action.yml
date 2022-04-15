@@ -3,8 +3,14 @@ description: Scans code base for to-do comments and syncs them to GitHub Issues
 runs:
   using: composite
   steps:
+  - name: Print the directory before the checkout
+    shell: bash
+    run: tree
   - name: Check out the workflow ref (detached HEAD)
     uses: actions/checkout@main
+  - name: Print the directory after the checkout
+    shell: bash
+    run: tree
   - name: Run the action script
     shell: bash
     run: |
