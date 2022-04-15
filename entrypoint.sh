@@ -1,3 +1,4 @@
 #!/bin/sh
 
-echo "Hello, world!"
+TODO=$(npx tomashubelbauer/todo)
+echo $TODO
