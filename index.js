@@ -29,14 +29,13 @@ for (let page = 1; page <= pages; page++) {
   issues.push(...pageIssues);
 }
 
-console.log(issues.length, 'issues');
+console.log(issues.length, 'issues:');
 for (const issue of issues) {
   console.log('issue', issue.number, issue.title);
 }
 
-const items = [...todo(path)];
-console.log(issues.length, 'items');
-for await (const item of items) {
+console.log('items:');
+for await (const item of todo(path, '^((?!(\.git|node_modules)).)*$', true)) {
   console.log('item', item.path, item.text);
 }
 
