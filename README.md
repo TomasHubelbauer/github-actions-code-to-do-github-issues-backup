@@ -35,9 +35,7 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out the main branch
-      uses: actions/checkout@main
-    - name: Sync to-do comments to GitHub Issues
+    - name: Sync to-do comments with GitHub Issues
       uses: tomashubelbauer/github-actions-code-to-do-github-issues-backup@main
 ```
 
