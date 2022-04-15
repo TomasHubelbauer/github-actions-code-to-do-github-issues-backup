@@ -42,8 +42,8 @@ for (let page = 1; page <= pages; page++) {
 }
 
 for await (const item of todo(path)) {
-  const path = item.path.slice(path.length) + 1;
-  const title = `${item.text} (${path}:${item.line})`;
+  const name = item.path.slice(path.length) + 1;
+  const title = `${item.text} (${name}:${item.line})`;
 
   const issue = issues.find(issue => issue.title === title);
   if (issue) {
@@ -52,7 +52,7 @@ for await (const item of todo(path)) {
   }
   else {
     // Note that `plain=true` is there to render everything as text, no viewers
-    const body = `${server}/${repo}/blob/${branch}/${path}?plain=true#L${item.line}`;
+    const body = `${server}/${repo}/blob/${branch}/${name}?plain=true#L${item.line}`;
 
     console.log(`"${title}" is new - opening…`);
     const data = await callGitHub(token, `repos/${repo}/issues`, { method: 'POST', body: { title, body, labels: [labels] } });
