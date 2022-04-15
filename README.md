@@ -22,9 +22,23 @@ Issues maintained by this action are labeled `to-do`. This is not configurable.
 
 ## Usage
 
+Make sure you check out the repository (e.g. `actions/checkout`), otherwise the
+action will have code to look for to-do comments in. GitHub Actions workflows do
+not check out the repository contents by default.
+
+`.github/workflows/main.yml`:
 ```yml
-- name: 
-  uses: tomashubelbauer/github-actions-code-to-do-github-issues-backup@v1
+name: main
+on: push
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out the main branch
+      uses: actions/checkout@v3
+    - name: Sync to-do comments to GitHub Issues
+      uses: tomashubelbauer/github-actions-code-to-do-github-issues-backup@v1
 ```
 
 You can see this in action (pun intended) in this GitHub repository:
