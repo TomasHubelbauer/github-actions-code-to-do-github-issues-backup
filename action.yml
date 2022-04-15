@@ -7,3 +7,4 @@ runs:
     uses: actions/checkout@main
   - name: Run the action script
     run: entrypoint.sh
+    shell: bash
