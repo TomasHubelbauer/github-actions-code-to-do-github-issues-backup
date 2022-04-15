@@ -35,9 +35,6 @@ for (const issue of issues) {
 }
 
 console.log('items:');
-for await (const item of todo(path, '^((?!(\.git|node_modules)).)*$', true)) {
+for await (const item of todo(path, undefined, true)) {
   console.log('item', item.path, item.text);
 }
-
-console.log('readdir path', await fs.promises.readdir(path));
-console.log('readdir .', await fs.promises.readdir('.'));
