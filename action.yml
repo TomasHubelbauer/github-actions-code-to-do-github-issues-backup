@@ -1,5 +1,9 @@
 name: Code to-do GitHub Issues backup
 description: Scans code base for to-do comments and syncs them to GitHub Issues
 runs:
-  using: docker
-  image: Dockerfile
+  using: composite
+  steps:
+  - name: Check out the workflow ref (detached HEAD)
+    uses: actions/checkout@main
+  - name: Run the action script
+    run: entrypoint.sh
