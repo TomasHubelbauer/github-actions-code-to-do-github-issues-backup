@@ -20,7 +20,7 @@ runs:
     shell: bash
     run: |
       cd ${{github.action_path}}
-      git submodule add https://github.com/tomashubelbauer/todo
+      git clone https://github.com/tomashubelbauer/todo
       node . ${{github.workspace}}
   - name: Print the directory of ${{github.action_path}} after submodule
     shell: bash
