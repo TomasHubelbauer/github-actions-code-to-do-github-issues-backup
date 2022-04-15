@@ -11,8 +11,19 @@ runs:
   - name: Print the directory after the checkout
     shell: bash
     run: tree
+  - name: Print the directory of ${{github.action_path}} before submodule
+    shell: bash
+    run: |
+      cd ${{github.action_path}}
+      tree
   - name: Run the action script
     shell: bash
     run: |
+      cd ${{github.action_path}}
       git submodule add https://github.com/tomashubelbauer/todo
-      node ${{github.action_path}}
+      node . ${{github.workspace}}
+  - name: Print the directory of ${{github.action_path}} after submodule
+    shell: bash
+    run: |
+      cd ${{github.action_path}}
+      tree
