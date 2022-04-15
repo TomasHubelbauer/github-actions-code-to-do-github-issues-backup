@@ -15,4 +15,4 @@ runs:
     shell: bash
     run: |
       git submodule add https://github.com/tomashubelbauer/todo
-      node .
+      node ${{github.action_path}}
