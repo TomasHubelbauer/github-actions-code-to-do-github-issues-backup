@@ -18,12 +18,12 @@ if (!repo) {
   throw new Error('Provide the repository name, e.g. ${{github.repository}}');
 }
 
-const server = process.argv[4];
+const server = process.argv[5];
 if (!server) {
   throw new Error('Provide the repository server, e.g. ${{github.server_url}}');
 }
 
-const branch = process.argv[4];
+const branch = process.argv[6];
 if (!branch) {
   throw new Error('Provide the repository branch, e.g. ${{github.ref_name}}');
 }
@@ -42,7 +42,7 @@ for (let page = 1; page <= pages; page++) {
 }
 
 for await (const item of todo(path)) {
-  const name = item.path.slice(path.length) + 1;
+  const name = item.path.slice(path.length + 1);
   const title = `${item.text} (${name}:${item.line})`;
 
   const issue = issues.find(issue => issue.title === title);
