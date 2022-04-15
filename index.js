@@ -50,5 +50,5 @@ for await (const item of todo(path)) {
 for (const issue of issues) {
   console.log(`"${issue.title}" (#${issue.number}) is old - closing…`);
   const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { state: 'closed' } });
-  console.log(`"${title}" is new - closed ${data.number}`);
+  console.log(`"${issue.title}" is old - closed ${data.number}`);
 }
