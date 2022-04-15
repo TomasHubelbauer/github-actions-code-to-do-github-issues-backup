@@ -35,6 +35,6 @@ for (const issue of issues) {
 }
 
 console.log('items:');
-for await (const item of todo(path, undefined, true)) {
+for await (const item of todo(path)) {
   console.log('item', item.path, item.text);
 }
