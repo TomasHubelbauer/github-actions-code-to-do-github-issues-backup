@@ -1,4 +1,6 @@
 import todo from './todo/index.js';
+import surveyPages from './suveryPages.js';
+import callGitHub from './suveryPages.js';
 
 if (!process.argv[2]) {
   throw new Error('Provide the path of ${{github.workspace}}');
