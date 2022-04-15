@@ -18,6 +18,16 @@ if (!repo) {
   throw new Error('Provide the repository name, e.g. ${{github.repository}}');
 }
 
+const server = process.argv[4];
+if (!server) {
+  throw new Error('Provide the repository server, e.g. ${{github.server_url}}');
+}
+
+const branch = process.argv[4];
+if (!branch) {
+  throw new Error('Provide the repository branch, e.g. ${{github.ref_name}}');
+}
+
 const labels = 'to-do';
 
 // Make a call to GitHub to find out the amount of pages needed to fetch issues
@@ -32,14 +42,17 @@ for (let page = 1; page <= pages; page++) {
 }
 
 for await (const item of todo(path)) {
-  const title = `${item.text} (${item.path.slice(path.length + 1)})`;
+  const path = item.path.slice(path.length) + 1;
+  const title = `${item.text} (${path}:${item.line})`;
+
   const issue = issues.find(issue => issue.title === title);
   if (issue) {
     issues.splice(issues.indexOf(issue), 1);
     console.log(`"${title}" already exists in #${issue.number}`);
   }
   else {
-    const body = `${item.path.slice(path.length) + 1}: ${item.line}`;
+    // Note that `plain=true` is there to render everything as text, no viewers
+    const body = `${server}/${repo}/blob/${branch}/${path}?plain=true#L${item.line}`;
 
     console.log(`"${title}" is new - opening…`);
     const data = await callGitHub(token, `repos/${repo}/issues`, { method: 'POST', body: { title, body, labels: [labels] } });
