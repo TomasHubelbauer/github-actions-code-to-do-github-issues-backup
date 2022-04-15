@@ -27,6 +27,11 @@ Issues maintained by this action are labeled `to-do`. This is not configurable.
   uses: tomashubelbauer/github-actions-code-to-do-github-issues-backup@v1
 ```
 
+You can see this in action (pun intended) in this GitHub repository:
+https://github.com/TomasHubelbauer/github-actions-code-to-do-github-issues-backup-demo
+
+I have not published this GitHub Action to the GitHub Marketplace.
+
 ## Contributing
 
 I am not likely to accept contributions to this action unless they benefit my
