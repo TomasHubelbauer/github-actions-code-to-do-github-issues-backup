@@ -1,3 +1,4 @@
+import fs from 'fs';
 import todo from './todo/index.js';
 import surveyPages from './suveryPages.js';
 import callGitHub from './callGithub.js';
@@ -28,10 +29,16 @@ for (let page = 1; page <= pages; page++) {
   issues.push(...pageIssues);
 }
 
+console.log(issues.length, 'issues');
 for (const issue of issues) {
   console.log('issue', issue.number, issue.title);
 }
 
-for await (const item of todo(path)) {
+const items = [...todo(path)];
+console.log(issues.length, 'items');
+for await (const item of items) {
   console.log('item', item.path, item.text);
 }
+
+console.log('readdir path', await fs.promises.readdir(path));
+console.log('readdir .', await fs.promises.readdir('.'));
