@@ -8,5 +8,5 @@ runs:
   - name: Run the action script
     shell: bash
     run: |
-      TODO=$(npx tomashubelbauer/todo)
-      node index.js
+      git submodule add https://github.com/tomashubelbauer/todo
+      node .
