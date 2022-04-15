@@ -8,6 +8,10 @@ export default async function surveyPages(/** @type {string} */ token, /** @type
   const url = makeUrl(route, params);
   const response = await promisify(https.request)(url, makeOptions(token, 'GET'));
   if (!response.headers.link) {
+    // Note that this seems to indicate one page and I think this is a bug:
+    // TODO: Solve this in https://support.github.com/ticket/personal/0/1588363
+    return 1;
+
     console.log(response.statusCode, response.statusMessage, url);
     console.log(response.headers);
     console.log((await buffer(response)).toString());
