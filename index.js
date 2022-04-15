@@ -18,13 +18,15 @@ if (!repo) {
   throw new Error('Provide the repository name, e.g. ${{github.repository}}');
 }
 
+const labels = 'to-do';
+
 // Make a call to GitHub to find out the amount of pages needed to fetch issues
-const pages = await surveyPages(token, `repos/${repo}/issues`, { per_page: 100, labels: 'to-do' });
+const pages = await surveyPages(token, `repos/${repo}/issues`, { per_page: 100, labels });
 console.log('Found', pages, 'issue pages');
 
 let issues = [];
 for (let page = 1; page <= pages; page++) {
-  const pageIssues = await callGitHub(token, `repos/${repo}/issues`, { params: { per_page: 100, page, labels: 'to-do' } });
+  const pageIssues = await callGitHub(token, `repos/${repo}/issues`, { params: { per_page: 100, page, labels } });
   console.log('Fetched', pageIssues.length, 'issues on page', page);
   issues.push(...pageIssues);
 }
@@ -37,10 +39,16 @@ for await (const item of todo(path)) {
     console.log(`"${title}" already exists in #${issue.number}`);
   }
   else {
-    console.log(`"${title}" is new - creating…`);
+    const body = `${item.path.slice(path.length)}: ${item.line}`;
+
+    console.log(`"${title}" is new - opening…`);
+    const data = await callGitHub(token, `repos/${repo}/issues`, { method: 'POST', body: { title, body, labels: [labels] } });
+    console.log(`"${title}" is new - opened ${data.number}`);
   }
 }
 
 for (const issue of issues) {
-  console.log(`"${issue.title}" (#${issue.number}) is old - deleting…`);
+  console.log(`"${issue.title}" (#${issue.number}) is old - closing…`);
+  const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { state: 'closed' } });
+  console.log(`"${title}" is new - closed ${data.number}`);
 }
