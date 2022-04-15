@@ -19,22 +19,28 @@ if (!repo) {
 }
 
 // Make a call to GitHub to find out the amount of pages needed to fetch issues
-const pages = await surveyPages(token, `repos/${repo}/issues`, { per_page: 100 });
+const pages = await surveyPages(token, `repos/${repo}/issues`, { per_page: 100, labels: 'to-do' });
 console.log('Found', pages, 'issue pages');
 
 let issues = [];
 for (let page = 1; page <= pages; page++) {
-  const pageIssues = await callGitHub(token, `repos/${repo}/issues`, { params: { per_page: 100, page } });
+  const pageIssues = await callGitHub(token, `repos/${repo}/issues`, { params: { per_page: 100, page, labels: 'to-do' } });
   console.log('Fetched', pageIssues.length, 'issues on page', page);
   issues.push(...pageIssues);
 }
 
-console.log(issues.length, 'issues:');
-for (const issue of issues) {
-  console.log('issue', issue.number, issue.title);
+for await (const item of todo(path)) {
+  const title = `${item.text} (${item.path.slice(path.length)})`;
+  const issue = issues.find(issue => issue.title === title);
+  if (issue) {
+    issues.splice(issues.indexOf(issue), 1);
+    console.log(`"${title}" already exists in #${issue.number}`);
+  }
+  else {
+    console.log(`"${title}" is new - creating…`);
+  }
 }
 
-console.log('items:');
-for await (const item of todo(path)) {
-  console.log('item', item.path, item.text);
+for (const issue of issues) {
+  console.log(`"${issue.title}" (#${issue.number}) is old - deleting…`);
 }
