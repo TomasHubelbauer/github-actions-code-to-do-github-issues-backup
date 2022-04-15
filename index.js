@@ -1,6 +1,6 @@
 import todo from './todo/index.js';
 import surveyPages from './suveryPages.js';
-import callGitHub from './suveryPages.js';
+import callGitHub from './callGithub';
 
 const path = process.argv[2];
 if (!path) {
