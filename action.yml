@@ -5,25 +5,21 @@ runs:
   steps:
   - name: Print the directory before the checkout
     shell: bash
-    run: tree
+    run: |
+      echo "Before checkout"
+      pwd
+      tree
   - name: Check out the workflow ref (detached HEAD)
     uses: actions/checkout@main
   - name: Print the directory after the checkout
     shell: bash
-    run: tree
-  - name: Print the directory of ${{github.action_path}} before submodule
-    shell: bash
     run: |
-      cd ${{github.action_path}}
+      echo "After checkout"
+      pwd
       tree
   - name: Run the action script
     shell: bash
     run: |
       cd ${{github.action_path}}
       git clone https://github.com/tomashubelbauer/todo
-      node . ${{github.workspace}}
-  - name: Print the directory of ${{github.action_path}} after submodule
-    shell: bash
-    run: |
-      cd ${{github.action_path}}
-      tree
+      node . ${{github.workspace}} ${{github.token}} ${{github.repository}}
