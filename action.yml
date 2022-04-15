@@ -6,5 +6,7 @@ runs:
   - name: Check out the workflow ref (detached HEAD)
     uses: actions/checkout@main
   - name: Run the action script
-    run: entrypoint.sh
     shell: bash
+    run: |
+      TODO=$(npx tomashubelbauer/todo)
+      node index.js
