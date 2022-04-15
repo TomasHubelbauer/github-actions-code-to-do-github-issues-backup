@@ -36,9 +36,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check out the main branch
-      uses: actions/checkout@v3
+      uses: actions/checkout@main
     - name: Sync to-do comments to GitHub Issues
-      uses: tomashubelbauer/github-actions-code-to-do-github-issues-backup@v1
+      uses: tomashubelbauer/github-actions-code-to-do-github-issues-backup@main
 ```
 
 You can see this in action (pun intended) in this GitHub repository:
