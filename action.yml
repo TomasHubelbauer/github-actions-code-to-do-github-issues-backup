@@ -8,7 +8,7 @@ runs:
     run: |
       echo "Before checkout"
       pwd
-      tree
+      tree -a
   - name: Check out the workflow ref (detached HEAD)
     uses: actions/checkout@main
   - name: Print the directory after the checkout
@@ -16,7 +16,7 @@ runs:
     run: |
       echo "After checkout"
       pwd
-      tree
+      tree -a
   - name: Run the action script
     shell: bash
     run: |
