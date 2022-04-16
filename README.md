@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Sync to-do comments with GitHub Issues
-      uses: tomashubelbauer/github-actions-code-to-do-github-issues-backup@main
+      uses: tomashubelbauer/todo-comments-github-issues@main
 ```
 
 You can see this in action (pun intended) in this GitHub repository:
