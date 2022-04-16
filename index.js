@@ -54,9 +54,17 @@ for await (const item of todo(path)) {
     // Note that `plain=true` is there to render everything as text, no viewers
     const body = `${server}/${repo}/blob/${branch}/${name}?plain=true#L${item.line}`;
 
-    console.log(`"${title}" is new - opening…`);
-    const data = await callGitHub(token, `repos/${repo}/issues`, { method: 'POST', body: { title, body, labels: [labels] } });
-    console.log(`"${title}" is new - opened ${data.number}`);
+    const [issue, ...dupes] = issues.filter(issue => issue.title.startsWith(`${item.text} (${name}:`));
+    if (issue !== undefined && dupes.length === 0) {
+      console.log(`"${title}" was moved - updating…`);
+      const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { title, body } });
+      console.log(`"${title}" was moved - updated ${data.number}`);
+    }
+    else {
+      console.log(`"${title}" is new - opening…`);
+      const data = await callGitHub(token, `repos/${repo}/issues`, { method: 'POST', body: { title, body, labels: [labels] } });
+      console.log(`"${title}" is new - opened ${data.number}`);
+    }
   }
 }
 
