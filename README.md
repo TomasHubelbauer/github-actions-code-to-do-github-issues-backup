@@ -6,7 +6,7 @@ This GitHub Actions action scans your repository's code base for to-do comments
 using [todo] and sync them to GitHub Issues for the repository.
 
 - New to-do comments open new issues
-- Moved to-do comments (line number change) close old and open new issue
+- Moved to-do comments (line number change) close old and open new issue (#2)
 - Changed to-do comments (to-do text change) close old and open new issue
 - Removed to-do comments close old issues
 
