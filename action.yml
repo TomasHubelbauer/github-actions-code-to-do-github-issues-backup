@@ -1,5 +1,5 @@
-name: Code to-do GitHub Issues backup
-description: Scans code base for to-do comments and syncs them to GitHub Issues
+name: TODO Comments GitHub Issues
+description: Scans code base for TODO comments and syncs them to GitHub Issues.
 runs:
   using: composite
   steps:
