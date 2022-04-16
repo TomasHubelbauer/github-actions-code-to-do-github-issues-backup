@@ -56,6 +56,7 @@ for await (const item of todo(path)) {
 
     const [issue, ...dupes] = issues.filter(issue => issue.title.startsWith(`${item.text} (${name}:`));
     if (issue !== undefined && dupes.length === 0) {
+      issues.splice(issues.indexOf(issue), 1);
       console.log(`"${title}" was moved - updating…`);
       const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { title, body } });
       console.log(`"${title}" was moved - updated ${data.number}`);
