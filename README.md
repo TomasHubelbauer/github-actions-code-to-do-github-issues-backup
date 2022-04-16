@@ -1,4 +1,4 @@
-# GitHub Actions code to-do GitHub Issues backup
+# `TODO` Comments GitHub Issues GitHub Action
 
 [todo]: https://github.com/tomashubelbauer/todo
 
