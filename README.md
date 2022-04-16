@@ -37,7 +37,7 @@ jobs:
 ```
 
 You can see this in action (pun intended) in this GitHub repository:
-https://github.com/TomasHubelbauer/github-actions-code-to-do-github-issues-backup-demo
+https://github.com/TomasHubelbauer/todo-comments-github-issues-demo
 
 I have not published this GitHub Action to the GitHub Marketplace.
 
