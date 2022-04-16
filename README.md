@@ -44,7 +44,7 @@ I have not published this GitHub Action to the GitHub Marketplace.
 ## Development
 
 1. Make a change here
-2. Go to https://github.com/TomasHubelbauer/github-actions-code-to-do-github-issues-backup-demo/actions/workflows/main.yml
+2. Go to https://github.com/TomasHubelbauer/todo-comments-github-issues-demo/actions/workflows/main.yml
 3. Click Run workflow
 
 ## Contributing
