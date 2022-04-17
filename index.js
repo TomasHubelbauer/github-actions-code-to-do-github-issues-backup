@@ -45,7 +45,7 @@ for await (const item of todo(path)) {
 
   // See if there is a unique fallback match with only a different line number
   const [movedIssue, ...duplicates] = issues.filter(issue => {
-    const { text } = issue.title.match(/(?<text>^.+) \(:(?<line>\d+)\)$/);
+    const { text } = issue.title.match(/(?<text>^.+) \(:(?<line>\d+)\)$/).groups;
     return text === item.text && issue.labels.find(label => label.name === name);
   });
 
