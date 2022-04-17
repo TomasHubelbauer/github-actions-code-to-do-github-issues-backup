@@ -23,9 +23,9 @@ if (!server) {
   throw new Error('Provide the repository server, e.g. ${{github.server_url}}');
 }
 
-const branch = process.argv[6];
-if (!branch) {
-  throw new Error('Provide the repository branch, e.g. ${{github.ref_name}}');
+const sha = process.argv[6];
+if (!sha) {
+  throw new Error('Provide the commit SHA, e.g. ${{github.sha}}');
 }
 
 const labels = 'to-do';
@@ -52,7 +52,7 @@ for await (const item of todo(path)) {
   }
   else {
     // Note that `plain=true` is there to render everything as text, no viewers
-    const body = `${server}/${repo}/blob/${branch}/${name}?plain=true#L${item.line}`;
+    const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${item.line}`;
 
     const [issue, ...dupes] = issues.filter(issue => issue.title.startsWith(`${item.text} (${name}:`));
     if (issue !== undefined && dupes.length === 0) {
