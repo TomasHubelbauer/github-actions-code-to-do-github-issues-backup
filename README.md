@@ -8,10 +8,10 @@ using [todo] and sync them to GitHub Issues for the repository.
 - New to-do comments open new issues
 - Moved to-do comments (line number change) rename the issue
 - Changed to-do comments (to-do text change) close old and open new issue
-- Removed to-do comments close old issues
+- Removed to-do comments close old issues with a comment
 
 The issue body contains a permalink to the `TODO` comment line, making it a code
-preview box. The closure does not add any comments currently, but see #3.
+preview box. The closure comments references close commit and shows its message.
 
 This action has no `inputs` or `outputs`.
 
