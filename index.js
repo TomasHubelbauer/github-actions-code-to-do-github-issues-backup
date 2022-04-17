@@ -13,7 +13,7 @@ const repo = process.env.GITHUB_REPOSITORY;
 const server = process.env.GITHUB_SERVER_URL;
 const sha = process.env.GITHUB_SHA;
 
-const labels = 'to-do';
+const labels = 'to-do-wip';
 
 // Make a call to GitHub to find out the amount of pages needed to fetch issues
 const pages = await surveyPages(token, `repos/${repo}/issues`, { per_page: 100, labels });
@@ -26,46 +26,63 @@ for (let page = 1; page <= pages; page++) {
   issues.push(...pageIssues);
 }
 
+// Go over the to-do items and try to match, update or create issues for them
 for await (const item of todo(path)) {
   const name = item.path.slice(path.length + 1);
-  const title = `${item.text} (${name}:${item.line})`;
 
-  const issue = issues.find(issue => issue.title === title);
-  if (issue) {
-    issues.splice(issues.indexOf(issue), 1);
-    console.log(`"${title}" already exists in #${issue.number}`);
-  }
-  else {
-    // Note that `plain=true` is there to render everything as text, no viewers
-    const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${item.line}`;
+  // Attempt to find an issue with the same text, line and path as the to-do item
+  const existingIssue = issues.find(issue => {
+    const { text, line } = issue.title.match(/(?<text>^.+) \(:(?<line>\d+)\)$/);
+    return text === item.text && +line === item.line && issue.labels.find(label => label.name === name);
+  });
 
-    const [issue, ...dupes] = issues.filter(issue => issue.title.startsWith(`${item.text} (${name}:`));
-    if (issue !== undefined && dupes.length === 0) {
-      issues.splice(issues.indexOf(issue), 1);
-      console.log(`"${title}" was moved - updating…`);
-      const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { title, body } });
-      console.log(`"${title}" was moved - updated ${data.number}`);
-    }
-    else {
-      console.log(`"${title}" is new - opening…`);
-      const data = await callGitHub(token, `repos/${repo}/issues`, { method: 'POST', body: { title, body, labels: [labels] } });
-      console.log(`"${title}" is new - opened ${data.number}`);
-    }
+  // Skip existing issue and remove it from the pile so it doesn't get deleted
+  if (existingIssue) {
+    issues.splice(issues.indexOf(existingIssue), 1);
+    console.log(`"${item.text}" already exists: ${existingIssue.html_url}`);
+    continue;
   }
+
+  // See if there is a unique fallback match with only a different line number
+  const [movedIssue, ...duplicates] = issues.filter(issue => {
+    const { text } = issue.title.match(/(?<text>^.+) \(:(?<line>\d+)\)$/);
+    return text === item.text && issue.labels.find(label => label.name === name);
+  });
+
+  const title = `${item.text} (:${item.line})`;
+
+  // Note that `plain=true` is there to render as plain text, no preview pages
+  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${item.line}`;
+
+  // Recognize the to-do comment just changed line numbers within the file
+  if (movedIssue && duplicates.length === 0) {
+    // Remove the candidate from the pile so it doesn't get deleted
+    issues.splice(issues.indexOf(movedIssue), 1);
+
+    console.log(`"${item.text}" was moved - updating…`);
+    await callGitHub(token, `repos/${repo}/issues/${movedIssue.number}`, { method: 'PATCH', body: { title, body } });
+    console.log(`"${item.text}" was moved - updated: ${movedIssue.html_url}`);
+    continue;
+  }
+
+  console.log(`"${item.text}" is new - opening…`);
+  const newIssue = await callGitHub(token, `repos/${repo}/issues`, { method: 'POST', body: { title, body, labels: [labels, name] } });
+  console.log(`"${item.text}" is new - opened: ${newIssue.html_url}`);
 }
 
+// Go over the unmatched issues and close them with a comment (to-do is no more)
 for (const issue of issues) {
   // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
   const event = JSON.parse(await fs.promises.readFile(process.env.GITHUB_EVENT_PATH, 'utf-8'));
   const [messageTitle, ...messageLines] = (event.head_commit?.message ?? `commit ${sha}`).split('\n').filter(line => !!line);
 
   const body = `Removed in [${messageTitle}](${server}/${repo}/commit/${sha})${messageLines.length > 0 ? ':\n\n' : ''}${messageLines.map(line => '> ' + line).join('\n')}\n`;
-  console.log(`"${issue.title}" (#${issue.number}) is old - commenting…`);
-  const { html_url } = await callGitHub(token, `repos/${repo}/issues/${issue.number}/comments`, { method: 'POST', body: { body } });
-  console.log(`"${issue.title}" is old - commented ${html_url}`);
+  console.log(`"${issue.title}" is old - commenting…`);
+  const comment = await callGitHub(token, `repos/${repo}/issues/${issue.number}/comments`, { method: 'POST', body: { body } });
+  console.log(`"${issue.title}" is old - commented: ${comment.html_url}`);
 
   const state = 'closed';
-  console.log(`"${issue.title}" (#${issue.number}) is old - closing…`);
-  const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { state } });
-  console.log(`"${issue.title}" is old - closed ${data.number}`);
+  console.log(`"${issue.title}" is old - closing…`);
+  await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { state } });
+  console.log(`"${issue.title}" is old - closed: ${issue.html_url}`);
 }
