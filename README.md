@@ -10,6 +10,9 @@ using [todo] and sync them to GitHub Issues for the repository.
 - Changed to-do comments (to-do text change) close old and open new issue
 - Removed to-do comments close old issues
 
+The issue body contains a permalink to the `TODO` comment line, making it a code
+preview box. The closure does not add any comments currently, but see #3.
+
 This action has no `inputs` or `outputs`.
 
 [todo] supports a handful of to-do comment patterns, nothing more is supported.
