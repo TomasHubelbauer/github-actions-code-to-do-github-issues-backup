@@ -13,7 +13,7 @@ const repo = process.env.GITHUB_REPOSITORY;
 const server = process.env.GITHUB_SERVER_URL;
 const sha = process.env.GITHUB_SHA;
 
-const labels = 'to-do-wip';
+const labels = 'todo-comment';
 
 // Make a call to GitHub to find out the amount of pages needed to fetch issues
 const pages = await surveyPages(token, `repos/${repo}/issues`, { per_page: 100, labels });

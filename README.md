@@ -1,28 +1,29 @@
 # `TODO` Comments GitHub Issues GitHub Action
 
-[todo]: https://github.com/tomashubelbauer/todo
+[`todo`]: https://github.com/tomashubelbauer/todo
 
-This GitHub Actions action scans your repository's code base for to-do comments
-using [todo] and sync them to GitHub Issues for the repository.
+This GitHub Actions action scans your repository's code base for `TODO` comments
+using [`todo`] and syncs them to GitHub Issues of the repository.
 
-- New to-do comments open new issues
-- Moved to-do comments (line number change) rename the issue
-- Changed to-do comments (to-do text change) close old and open new issue
-- Removed to-do comments close old issues with a comment
+- New `TODO` comment opens a new issues
+- Moved `TODO` comment (line number change) renames the issue
+- Edited `TODO` comment (text change) closes the old issue and opens a new issue
+- Removed `TODO` comment closes the old issue with a comment
 
-The issue body contains a permalink to the `TODO` comment line, making it a code
-preview box. The closure comments references close commit and shows its message.
+The issue body contains a permalink to the `TODO` line, making it a code preview
+box. The closure comment references the associated commit and shows its message.
 
 This action has no `inputs` or `outputs`.
 
-[todo] supports a handful of to-do comment patterns, nothing more is supported.
+[`todo`] supports a couple of `TODO` comment patterns, only those are supported.
 This is not configurable.
 
 The `GITHUB_TOKEN` workflow PAT is used to call the GitHub API. See more at:
 https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 This is not configurable.
 
-Issues maintained by this action are labeled `to-do`. This is not configurable.
+Issues maintained by this action are labeled `todo-comment`.
+This is not configurable.
 
 ## Usage
 
@@ -40,18 +41,18 @@ jobs:
 ```
 
 You can see this in action (pun intended) in this GitHub repository:
-https://github.com/TomasHubelbauer/todo-comments-github-issues-demo
+https://github.com/tomashubelbauer/todo-comments-github-issues-demo
 
 I have not published this GitHub Action to the GitHub Marketplace.
 
 ## Development
 
 1. Make a change here
-2. Go to https://github.com/TomasHubelbauer/todo-comments-github-issues-demo/actions/workflows/main.yml
+2. Go to https://github.com/tomashubelbauer/todo-comments-github-issues-demo/actions/workflows/main.yml
 3. Click Run workflow
 
 ## Contributing
 
 I am not likely to accept contributions unless they benefit my use-case.
 
-Feel free to fork the action and adjust it to suit your needs.
+Feel free to fork this GitHub Action and adjust it to suit your needs.
