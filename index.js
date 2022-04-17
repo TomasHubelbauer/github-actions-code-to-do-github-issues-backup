@@ -76,11 +76,11 @@ for (const issue of issues) {
   
   const body = `Removed in [${messageTitle}](${server}/${repo}/commit/${sha}):\n\n${messageLines.map(line => '> ' + line).join('\n')}\n`;
   console.log(`"${issue.title}" (#${issue.number}) is old - commenting…`);
-  const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}/comments`, { method: 'POST', body: { body } });
-  console.log(`"${issue.title}" is old - commented ${data.number}`);
+  const commentData = await callGitHub(token, `repos/${repo}/issues/${issue.number}/comments`, { method: 'POST', body: { body } });
+  console.log(`"${issue.title}" is old - commented ${commentData.number}`);
   
   const state = 'closed';
   console.log(`"${issue.title}" (#${issue.number}) is old - closing…`);
-  const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { state } });
-  console.log(`"${issue.title}" is old - closed ${data.number}`);
+  const issueData = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { state } });
+  console.log(`"${issue.title}" is old - closed ${issueData.number}`);
 }
