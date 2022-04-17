@@ -52,7 +52,7 @@ for await (const item of todo(path)) {
   const title = `${item.text} (:${item.line})`;
 
   // Note that `plain=true` is there to render as plain text, no preview pages
-  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${item.line}`;
+  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${item.line}-L${item.line + 1}`;
 
   // Recognize the to-do comment just changed line numbers within the file
   if (movedIssue && duplicates.length === 0) {
