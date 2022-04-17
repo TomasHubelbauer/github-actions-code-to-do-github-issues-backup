@@ -3,30 +3,15 @@ import todo from './todo/index.js';
 import surveyPages from './suveryPages.js';
 import callGitHub from './callGithub.js';
 
-const path = process.argv[2];
-if (!path) {
-  throw new Error('Provide the path of ${{github.workspace}}');
-}
-
-const token = process.argv[3];
+const token = process.argv[2];
 if (!token) {
   throw new Error('Provide a PAT, e.g. ${{github.token}}');
 }
 
-const repo = process.argv[4];
-if (!repo) {
-  throw new Error('Provide the repository name, e.g. ${{github.repository}}');
-}
-
-const server = process.argv[5];
-if (!server) {
-  throw new Error('Provide the repository server, e.g. ${{github.server_url}}');
-}
-
-const sha = process.argv[6];
-if (!sha) {
-  throw new Error('Provide the commit SHA, e.g. ${{github.sha}}');
-}
+const path = process.env.GITHUB_WORKSPACE;
+const repo = process.env.GITHUB_REPOSITORY;
+const server = process.env.GITHUB_SERVER_URL;
+const sha = process.env.GITHUB_SHA;
 
 const labels = 'to-do';
 
@@ -73,12 +58,12 @@ for (const issue of issues) {
   // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
   const event = JSON.parse(await fs.promises.readFile(process.env.GITHUB_EVENT_PATH, 'utf-8'));
   const [messageTitle, ...messageLines] = (event.head_commit?.message ?? `commit ${sha}`).split('\n').filter(line => !!line);
-  
+
   const body = `Removed in [${messageTitle}](${server}/${repo}/commit/${sha})${messageLines.length > 0 ? ':\n\n' : ''}${messageLines.map(line => '> ' + line).join('\n')}\n`;
   console.log(`"${issue.title}" (#${issue.number}) is old - commenting…`);
   const { html_url } = await callGitHub(token, `repos/${repo}/issues/${issue.number}/comments`, { method: 'POST', body: { body } });
   console.log(`"${issue.title}" is old - commented ${html_url}`);
-  
+
   const state = 'closed';
   console.log(`"${issue.title}" (#${issue.number}) is old - closing…`);
   const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { state } });
