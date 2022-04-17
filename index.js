@@ -72,7 +72,7 @@ for await (const item of todo(path)) {
 for (const issue of issues) {
   // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
   const event = JSON.parse(await fs.promises.readFile(process.env.GITHUB_EVENT_PATH, 'utf-8'));
-  const defaultMessage = `a commit\n\n\`event.head_commit\` was \`undefined`\.`;
+  const defaultMessage = `a commit\n\n\`event.head_commit\` was \`undefined\`.`;
   const [messageTitle, ...messageLines] = (event.head_commit?.message ?? defaultMessage).split('\n').filter(line => !!line);
   
   const body = `Removed in [${messageTitle}](${server}/${repo}/commit/${sha}):\n\n${messageLines.map(line => '> ' + line).join('\n')}\n`;
