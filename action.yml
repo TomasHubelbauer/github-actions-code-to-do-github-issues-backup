@@ -10,4 +10,4 @@ runs:
     run: |
       cd ${{github.action_path}}
       git clone https://github.com/tomashubelbauer/todo
-      node . ${{github.workspace}} ${{github.token}} ${{github.repository}} ${{github.server_url}} ${{github.sha}}
+      node . ${{github.token}}
