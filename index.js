@@ -33,6 +33,9 @@ for await (const item of todo(path)) {
   // Attempt to find an issue with the same text, line and path as the to-do item
   const existingIssue = issues.find(issue => {
     const { text, line } = issue.title.match(/(?<text>^.+) \(:(?<line>\d+)\)$/);
+
+    console.log({ text, line, item, labels: issue.labels });
+
     return text === item.text && +line === item.line && issue.labels.find(label => label.name === name);
   });
 
