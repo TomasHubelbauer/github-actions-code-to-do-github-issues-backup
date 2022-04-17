@@ -70,7 +70,17 @@ for await (const item of todo(path)) {
 }
 
 for (const issue of issues) {
+  // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+  const event = JSON.parse(await fs.promises.readFile(process.env.GITHUB_EVENT_PATH, 'utf-8'));
+  const [messageTitle, ...messageLines] = event.head_commit.message.split('\n').filter(line => !!line);
+  
+  const body = `Removed in [${messageTitle}](${server}/${repo}/commit/${sha}):\n\n${messageLines.map(line => '> ' + line).join('\n')}\n`;
+  console.log(`"${issue.title}" (#${issue.number}) is old - commenting…`);
+  const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}/comments`, { method: 'POST', body: { body } });
+  console.log(`"${issue.title}" is old - commented ${data.number}`);
+  
+  const state = 'closed';
   console.log(`"${issue.title}" (#${issue.number}) is old - closing…`);
-  const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { state: 'closed' } });
+  const data = await callGitHub(token, `repos/${repo}/issues/${issue.number}`, { method: 'PATCH', body: { state } });
   console.log(`"${issue.title}" is old - closed ${data.number}`);
 }
