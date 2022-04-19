@@ -30,6 +30,11 @@ for (let page = 1; page <= pages; page++) {
 for await (const item of todo(path)) {
   const name = item.path.slice(path.length + 1);
 
+  const title = `${item.text} (:${item.line})`;
+
+  // Note that `plain=true` is there to render as plain text, no preview pages
+  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${Math.max(0, item.line - 5)}-L${item.line + 5}`;
+  
   // Attempt to find an issue with the same text, line and path as the to-do item
   const existingIssue = issues.find(issue => {
     const { text, line } = issue.title.match(/(?<text>^.+) \(:(?<line>\d+)\)$/).groups;
@@ -39,7 +44,11 @@ for await (const item of todo(path)) {
   // Skip existing issue and remove it from the pile so it doesn't get deleted
   if (existingIssue) {
     issues.splice(issues.indexOf(existingIssue), 1);
-    console.log(`"${item.text}" already exists: ${existingIssue.html_url}`);
+    
+    // Note that existing issues still get updated to renew the preview snippet
+    console.log(`"${item.text}" was found - updating…`);
+    await callGitHub(token, `repos/${repo}/issues/${existingIssue.number}`, { method: 'PATCH', body: { title, body } });
+    console.log(`"${item.text}" was found - updated: ${existingIssue.html_url}`);
     continue;
   }
 
@@ -48,11 +57,6 @@ for await (const item of todo(path)) {
     const { text } = issue.title.match(/(?<text>^.+) \(:(?<line>\d+)\)$/).groups;
     return text === item.text && issue.labels.find(label => label.name === name);
   });
-
-  const title = `${item.text} (:${item.line})`;
-
-  // Note that `plain=true` is there to render as plain text, no preview pages
-  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${item.line}-L${item.line + 1}`;
 
   // Recognize the to-do comment just changed line numbers within the file
   if (movedIssue && duplicates.length === 0) {
