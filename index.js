@@ -33,7 +33,7 @@ for await (const item of todo(path)) {
   const title = `${item.text} (:${item.line})`;
 
   // Note that `plain=true` is there to render as plain text, no preview pages
-  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${Math.max(0, item.line - 5)}-L${item.line + 5}`;
+  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${Math.max(1, item.line - 5)}-L${item.line + 5}`;
   
   // Attempt to find an issue with the same text, line and path as the to-do item
   const existingIssue = issues.find(issue => {
