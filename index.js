@@ -30,12 +30,17 @@ for (let page = 1; page <= pages; page++) {
 for await (const item of todo(path)) {
   const name = item.path.slice(path.length + 1);
   const text = await fs.promises.readFile(path + '/' + name, 'utf-8');
-  const lines = text.split('\n').length;
+  const lines = text.split('\n');
+
+  // Do this as GitHub won't preview the last line of the file if empty
+  if (lines[lines.length - 1] === '') {
+    lines.pop();
+  }
 
   const title = `${item.text} (:${item.line})`;
 
   // Note that `plain=true` is there to render as plain text, no preview pages
-  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${Math.max(1, item.line - 5)}-L${Math.min(lines, item.line + 5)}`;
+  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${Math.max(1, item.line - 5)}-L${Math.min(lines.length, item.line + 5)}`;
 
   // Attempt to find an issue with the same text, line and path as the to-do item
   const existingIssue = issues.find(issue => {
