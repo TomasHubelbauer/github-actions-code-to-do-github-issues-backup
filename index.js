@@ -2,6 +2,7 @@ import fs from 'fs';
 import todo from './todo/index.js';
 import surveyPages from './suveryPages.js';
 import callGitHub from './callGithub.js';
+import computePreviewRange from './computePreviewRange.js';
 
 const token = process.argv[2];
 if (!token) {
@@ -29,18 +30,12 @@ for (let page = 1; page <= pages; page++) {
 // Go over the to-do items and try to match, update or create issues for them
 for await (const item of todo(path)) {
   const name = item.path.slice(path.length + 1);
-  const text = await fs.promises.readFile(path + '/' + name, 'utf-8');
-  const lines = text.split('\n');
-
-  // Do this as GitHub won't preview the last line of the file if empty
-  if (lines[lines.length - 1] === '') {
-    lines.pop();
-  }
 
   const title = `${item.text} (:${item.line})`;
 
-  // Note that `plain=true` is there to render as plain text, no preview pages
-  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${Math.max(1, item.line - 5)}-L${Math.min(lines.length, item.line + 5)}`;
+  // Note that `plain=true` is there to force rendering without preview widgets
+  const range = await computePreviewRange(path + '/' + name, item);
+  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${range}`;
 
   // Attempt to find an issue with the same text, line and path as the to-do item
   const existingIssue = issues.find(issue => {
