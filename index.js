@@ -35,7 +35,7 @@ for await (const item of todo(path)) {
 
   // Note that `plain=true` is there to force rendering without preview widgets
   const range = await computePreviewRange(path + '/' + name, item);
-  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true#L${range}`;
+  const body = `${server}/${repo}/blob/${sha}/${name}?plain=true${range}`;
 
   // Attempt to find an issue with the same text, line and path as the to-do item
   const existingIssue = issues.find(issue => {

@@ -16,7 +16,7 @@ export default async function computePreviewRange(path, item, log) {
 
   let start = item.line;
   for (let offset = 1; offset < extent; offset++) {
-    if (lines[item.line - 1 - offset] === '') {
+    if (!lines[item.line - 1 - offset]) {
       log?.('Blank line above at offset', offset);
       break;
     }
@@ -26,7 +26,7 @@ export default async function computePreviewRange(path, item, log) {
 
   let end = item.line;
   for (let offset = 1; offset < extent; offset++) {
-    if (lines[item.line - 1 + offset] === '') {
+    if (!lines[item.line - 1 + offset]) {
       log?.('Blank line below at offset', offset);
       break;
     }
@@ -34,5 +34,5 @@ export default async function computePreviewRange(path, item, log) {
     end++;
   }
 
-  return start + '-' + end;
+  return `#L${start}-L${end}`;
 }
